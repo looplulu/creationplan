@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="如果可以重来一次，你最想改变哪一件事？AI 为你展开三条有得有失的人生轨迹。">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>给你一粒后悔药</title>
+  <script>
+    // 累计使用人次追踪（造物库：Day 9 = 给你一粒后悔药）
+    (function() {
+      try {
+        fetch('/creationplan/api/track-visit', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ day: 9 }),
+          keepalive: true
+        });
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Long+Cang&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css?v=1">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="back-link" href="/creationplan/repositories/" aria-label="返回造物库">
+      <span aria-hidden="true">←</span>
+      <span>造物库</span>
+    </a>
+    <p>NO. 009 / 命运药房</p>
+    <button class="plain-button" id="aboutButton" type="button">服用说明</button>
+  </header>
+
+  <main>
+    <section class="intake" id="intake">
+      <div class="intake-copy">
+        <div class="rx-mark" aria-hidden="true">℞</div>
+        <p class="overline">A PRESCRIPTION FOR THE UNCHOSEN LIFE</p>
+        <h1>给你一粒<br><em>后悔药</em></h1>
+        <p class="lead">
+          它不能改变过去，只能替你打开一扇门：
+          看看另一种选择会带来什么，又会带走什么。
+        </p>
+
+        <div class="medicine-note">
+          <span>主要成分</span>
+          <strong>一次诚实的重新思考</strong>
+        </div>
+      </div>
+
+      <form class="prescription-form" id="regretForm">
+        <div class="form-topline">
+          <span>处方编号 / DAY 09</span>
+          <span id="characterCount">000 / 160</span>
+        </div>
+        <label for="regretInput">如果可以重来一次<br>你最想改变哪一件事？</label>
+        <textarea
+          id="regretInput"
+          name="regret"
+          rows="4"
+          maxlength="160"
+          placeholder="例如：我想在大学时认真学好英语"
+          required
+        ></textarea>
+        <p class="privacy-note">不记录，不评判。只在这一次推演中使用。</p>
+        <button class="swallow-button" type="submit">
+          <span class="mini-pill" aria-hidden="true"><i></i></span>
+          <span>吞下后悔药</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </form>
+
+      <div class="prompt-strip" aria-label="输入示例">
+        <span>不知道写什么？</span>
+        <button type="button" data-example="没有坚持学英语">没有坚持学英语</button>
+        <button type="button" data-example="当年没有勇敢表白">没有勇敢表白</button>
+        <button type="button" data-example="没有早点陪伴父母">没有早点陪伴父母</button>
+        <button type="button" data-example="那次不该冲动离职">不该冲动离职</button>
+      </div>
+    </section>
+
+    <section class="rewinding" id="rewinding" hidden aria-live="polite">
+      <div class="rewind-stage" aria-hidden="true">
+        <div class="falling-pill"><span></span></div>
+        <div class="water-ring ring-a"></div>
+        <div class="water-ring ring-b"></div>
+        <div class="water-ring ring-c"></div>
+      </div>
+      <p class="overline">RECALCULATING THE CROSSROADS</p>
+      <h2>正在回到命运的分岔口……</h2>
+      <p id="loadingHint">先理解你真正想改变的，未必只是那件事本身</p>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <header class="result-header">
+        <div>
+          <p class="overline">CASE FILE / 另一种人生并非标准答案</p>
+          <p class="category-stamp" id="category"></p>
+          <p class="result-question">你想改变的是</p>
+          <h2 id="regretTitle"></h2>
+          <p class="core-need" id="coreNeed"></p>
+        </div>
+        <button class="plain-button restart-button" id="restartButton" type="button">换一件事重新推演</button>
+      </header>
+
+      <section class="timeline-sheet">
+        <div class="sheet-header">
+          <span>人生轨迹推演报告</span>
+          <span>三种选择 / 没有完美路线</span>
+        </div>
+        <div class="timeline-grid" id="timelineGrid"></div>
+      </section>
+
+      <section class="today-prescription">
+        <div class="today-label">
+          <span>RX</span>
+          <p>今日处方</p>
+        </div>
+        <div class="today-copy">
+          <p class="overline">THE ONLY TIMELINE STILL OPEN</p>
+          <h3 id="todayTitle"></h3>
+          <ol id="todaySteps"></ol>
+        </div>
+      </section>
+
+      <footer class="ending">
+        <p class="ending-main" id="ending"></p>
+        <p class="ending-note" id="afterword"></p>
+        <div class="ending-actions">
+          <button class="copy-button" id="copyButton" type="button">复制这份人生处方</button>
+          <span id="copyFeedback" role="status"></span>
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <dialog class="about-dialog" id="aboutDialog">
+    <button class="dialog-close" id="dialogClose" type="button" aria-label="关闭">×</button>
+    <p class="overline">服用说明</p>
+    <h2>这不是人生重开器。</h2>
+    <p>
+      AI 只是在有限信息下推演可能性。另一条路也许更精彩，也一定有新的代价；
+      你没有走过它，所以没有人能证明它更好。
+    </p>
+    <p>
+      这份处方真正想做的，是帮你看清遗憾背后的需要，
+      再问一句：其中有没有一小部分，今天仍然能够开始？
+    </p>
+  </dialog>
+
+  <script src="./app.js?v=1"></script>
+</body>
+</html>

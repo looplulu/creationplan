@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="输入一个人生目标，AI 为你排出实现它所需的首发 11 人阵容。">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>人生11人 · 造物库</title>
+  <script>
+    // 累计使用人次追踪（造物库：Day 11 = 人生11人）
+    (function() {
+      try {
+        fetch('/creationplan/api/track-visit', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ day: 11 }),
+          keepalive: true
+        });
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css?v=4">
+</head>
+<body>
+  <div class="stadium-light light-left" aria-hidden="true"></div>
+  <div class="stadium-light light-right" aria-hidden="true"></div>
+  <div class="grass-noise" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="back-link" href="/creationplan/repositories/" aria-label="返回造物库">
+      <span aria-hidden="true">←</span>
+      返回造物库
+    </a>
+    <button class="plain-button" id="aboutButton" type="button">玩法说明</button>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero" id="hero">
+      <div class="hero-copy">
+        <p class="kicker">DAY 11 · LIFE STARTING XI</p>
+        <h1>人生11人</h1>
+        <p class="slogan">每个人的人生，都有一支属于自己的首发11人。</p>
+        <p class="intro">输入一个目标，AI 会拆解完成它所需的能力阵容：谁是 MVP，谁拖了后腿，今天该练哪一项。</p>
+      </div>
+
+      <form class="locker-card" id="lineupForm">
+        <label for="goalInput">现在，你最想完成的一件事情是什么？</label>
+        <p class="input-tip">描述得越清晰，阵容排布越精准。可以写上时间、难点、你现在卡在哪里。</p>
+        <textarea id="goalInput" maxlength="120" placeholder="例如：完成100天造物计划、减肥20斤、考上研究生、找到新工作、坚持跑步"></textarea>
+        <div class="form-foot">
+          <span id="characterCount">0 / 120</span>
+          <div class="submit-row">
+            <span class="inline-loading" id="inlineLoading" hidden>
+              <i aria-hidden="true"></i>
+              正在排阵
+            </span>
+            <button id="submitButton" type="submit">⚽ 排出首发阵容</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="result" id="result" tabindex="-1" aria-live="polite" hidden>
+      <div class="result-head">
+        <div>
+          <p class="kicker">FORMATION · <span id="formationText">4-3-3</span></p>
+          <h2 id="goalTitle" tabindex="-1">为你的目标排兵布阵</h2>
+          <p id="coachSummary">点击球场上的球员，查看每个位置为什么重要。</p>
+        </div>
+        <div class="score-board">
+          <span>战术指数</span>
+          <strong id="totalScore">--</strong>
+          <em id="verdict">等待开赛</em>
+        </div>
+      </div>
+
+      <div class="match-layout">
+        <section class="pitch-card" aria-label="首发阵容球场">
+          <div class="pitch">
+            <div class="pitch-line center"></div>
+            <div class="pitch-circle"></div>
+            <div class="box box-top"></div>
+            <div class="box box-bottom"></div>
+            <div class="players" id="players"></div>
+          </div>
+        </section>
+
+        <aside class="player-card" id="playerCard">
+          <p class="card-label">点击一名球员</p>
+          <h3>查看能力卡</h3>
+          <p>每个位置不是职业，而是完成目标需要训练的一种能力。</p>
+        </aside>
+      </div>
+
+      <section class="coach-grid">
+        <article>
+          <span>MVP</span>
+          <strong id="mvpName">--</strong>
+          <p id="mvpReason">--</p>
+        </article>
+        <article>
+          <span>最需要补强</span>
+          <strong id="weaknessName">--</strong>
+          <p id="weaknessReason">--</p>
+        </article>
+        <article class="training-card">
+          <span>今日训练</span>
+          <strong id="todayTraining">--</strong>
+        </article>
+      </section>
+
+      <section class="share-card" id="shareCard" aria-label="分享图">
+        <div class="share-top">
+          <span>人生11人</span>
+          <em>适合截图分享</em>
+        </div>
+        <h3 id="shareGoal">目标：--</h3>
+        <dl>
+          <div><dt>阵型</dt><dd id="shareFormation">4-3-3</dd></div>
+          <div><dt>MVP</dt><dd id="shareMvp">--</dd></div>
+          <div><dt>优先补强</dt><dd id="shareWeakness">--</dd></div>
+          <div><dt>今日训练</dt><dd id="shareTraining">--</dd></div>
+        </dl>
+      </section>
+
+      <div class="actions">
+        <button class="ghost-button" id="restartButton" type="button">换一个目标</button>
+        <button class="ghost-button" id="copyButton" type="button">复制战报</button>
+        <span id="copyFeedback" role="status"></span>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="aboutDialog">
+    <button class="dialog-close" id="dialogClose" type="button" aria-label="关闭">×</button>
+    <h2>怎么玩？</h2>
+    <p>它不是预测你会不会成功，而是把一个目标拆成 11 个关键能力。星级表示这项能力对目标的重要程度，不是你的当前能力分。</p>
+    <p>更重要的不是足球，而是看清：现在这场比赛，最该优先训练的位置是谁。</p>
+  </dialog>
+
+  <script src="./app.js?v=4"></script>
+</body>
+</html>
